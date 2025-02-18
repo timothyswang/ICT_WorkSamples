@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <title>TellTaleCards Player</title>
+</head>
+<body>
+
+    <div class="container" id="myContainer">
+        <div class="row my-3">
+            <h1 class="col col-12 text-center" id = "pageTitle">TellTaleCards Player and Reviewer</h1>
+        </div>
+
+        <div class="row my-3">
+            <p class = "col col-12 text-left" id="instructions">Tell Tale Cards is a game where you create a story based on a set of story cards. Each story card contains a story element that must be included in your story. The goal is to create a story that is coherent and creatively connects all your story elements.</p>
+            <p class = "col col-12 text-left" id="instructionsTwo"> On this website, you will be given a set of three random story cards and a set of literary features that you can choose to include in the story. You will then "compete" against OpenAI's GPT-3.5 in generating a story that includes those selected story cards and literary features. Finally, GPT-3.5 will assess both its own story and your story.</p>
+            <p class = "col col-12 text-left" id="instructionsThree"> First, click on the "New Story Cards" button below to generate three random story cards. These will be the story cards you (and GPT 3.5) will use in your story.</p>
+            <p class = "col col-12 text-left" id="instructionsFour"> Second, select a subset of literary features by clicking on the checkboxes. You will try to best to include these literary features in your story. GPT 3.5 will also be required to include these literary features as well. (For the test, ONLY use conflict, foreshadowing, and imagery!!!)</p>
+            <p class = "col col-12 text-left" id="instructionsFour"> Lastly, write the story in the text area below and hit submit! Only hit submit once and be patient. It may take a bit for GPT to process, but eventually the page will change.</p>
+        </div>
+
+        <form action="{{ url_for('new_gpt_request')}}" method="post">
+            <div class="row justify-content-center mt-3">
+                <label class="col col-8 text-center">Your Story Cards:</label>
+            </div>
+
+            <div class="row justify-content-center my-3">
+                <button type="button" class="btn btn-success justify-content-center" onclick="refreshStoryElements()">New Story Cards</button>
+            </div>
+
+            <div class="text-center" id="story_elements">
+                <input type="text" id="firstStoryElement", name="firstStoryElement", value="">
+                <input type="text" id="secondStoryElement", name="secondStoryElement", value="">
+                <input type="text" id="thirdStoryElement", name="thirdStoryElement", value="">
+            </div>
+
+            <div class="row justify-content-center mt-3">
+                <label class="col col-8 text-center">Select Your Literary Features</label>
+            </div>
+            <div class="form-check text-center">
+                <input class="form-check-input" type="checkbox" value="conflict" id="check_conflict" name="literary_elements">
+                <label class="form-check-label" for="check_conflict">
+                  Conflict
+                </label>
+            </div>
+            <div class="form-check text-center">
+                <input class="form-check-input" type="checkbox" value="suspense" id="check_suspense" name="literary_elements">
+                <label class="form-check-label" for="check_suspense">
+                  Suspense -- the story should have a situation where the reader knows something that the characters do not know, making the reader fear for the character
+                </label>
+            </div>
+            <div class="form-check text-center">
+                <input class="form-check-input" type="checkbox" value="foreshadowing" id="check_foreshadowing" name="literary_elements">
+                <label class="form-check-label" for="check_foreshadowing">
+                    Foreshadowing -- the story should have some object, situation, or plot point that hints at what will happen in the future
+                </label>
+            </div>
+            <div class="form-check text-center">
+                <input class="form-check-input" type="checkbox" value="flashback" id="check_flashback" name="literary_elements">
+                <label class="form-check-label" for="check_flashback">
+                    Flashback -- the story should reference something that occurred earlier in the story.
+                </label>
+            </div>
+            <div class="form-check text-center">
+                <input class="form-check-input" type="checkbox" value="plottwist" id="check_plottwist" name="literary_elements">
+                <label class="form-check-label" for="check_plottwist">
+                  Plot Twist -- the story should have a sudden reveal that changes how the reader views a character or plot point.
+                </label>
+            </div>
+            <div class="form-check text-center">
+                <input class="form-check-input" type="checkbox" value="imagery" id="check_imagery" name="literary_elements">
+                <label class="form-check-label" for="check_imagery">
+                    Imagery -- the story should have visually vivid and figurative descriptions.
+                </label>
+            </div>
+            <div class="form-check text-center">
+                <input class="form-check-input" type="checkbox" value="personification" id="check_personification" name="literary_elements">
+                <label class="form-check-label" for="check_personification">
+                    Personification -- the story should include descriptions of objects where the object is described as having human-like attributes.
+                </label>
+            </div>
+
+            <div class="mt-3">
+                <label for="input_story" class="form-label">Write Your Story Here:</label>
+                <textarea class="form-control" id="input_story" name="input_story" rows="10"></textarea>
+              </div>
+            
+            <h4>Note: Only hit the submit button once! It will take a while for GPT to return a response. Please be patient!</h4>
+
+            <div class="col-12 mt-3">
+                <button class="btn btn-primary" type="submit">Submit Story</button>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        // This script allows users to refresh the three story elements they would like to use for their story.
+
+        const allStoryElements = ["baseball", "cupid", "heart", "broken heart", "train", "guitar", "shark", "teddybear", "dice", "question", "dentures","treasure", "lottery", "cheeseburger", "stormy house", "downtown", "airplane", "unmade bed", "crying", "angry", "hourglass", "magic wand","monster", "jogging", "santa", "gloom", "entertainment", "present", "island", "hole", "sand castle", "ranch", "crystal ball", "banana peel","car crash", "punch", "surfing", "office worker", "snake", "gingerbread man", "dancing couple", "witch", "castle", "casino hotel", "alien","dancing", "key", "birthday cake", "cash", "toilet", "moon", "sun", "pig", "driving", "tornado", "bouquet", "diamond ring", "water bottle","tools", "campfire", "archery", "gas station", "three", "dog", "running", "ghost", "shopping", "argument", "cereal", "thief", "ending", "one way", "motorcycle flat", "wanted", "tunnel light", "shooting star", "laptop", "shower", "scroll", "poop", "spiderweb", "drive in", "bridge","fair", "ear", "ambulance", "pacifier", "dinosaur", "cowboy", "shock", "broken vase", "tissue box", "waterfall", "motel", "highway", "cruise ship", "chicken", "kiss", "math", "earth", "chemistry", "mountain climbing", "woman", "jazz", "forest","jail", "wizard", "beach romance","fire truck", "desert", "rain", "lightning", "happy", "worried", "mountains", "walking cane", "poker hand", "letter", "sleeping","celebration"];
+
+        function getRandInt(minNum, maxNum) {
+            return Math.floor(minNum + Math.random() * (maxNum - minNum));
+        }
+
+        function getSubset(thisArr, subsetSize) {
+            let arrLength = thisArr.length;
+
+            for (let i=0; i <= arrLength-2; i++) {
+                let thisRandInt = getRandInt(i, arrLength-1);
+                let temp = thisArr[i];
+                thisArr[i] = thisArr[thisRandInt];
+                thisArr[thisRandInt] = temp;
+            }
+
+            return thisArr.slice(0, subsetSize);
+
+        }
+
+        function refreshStoryElements() {
+            let refArray = allStoryElements;
+            subsetArray = getSubset(refArray, 3);
+
+            let newInnerHTML = "<input type='text' id='firstStoryElement', name='firstStoryElement', value='" + subsetArray[0] + "'><input type='text' id='secondStoryElement', name='secondStoryElement', value='" + subsetArray[1] + "'><input type='text' id='thirdStoryElement', name='thirdStoryElement', value='" + subsetArray[2] + "'>";
+
+            document.getElementById("story_elements").innerHTML = newInnerHTML;
+        }
+
+    </script>
+    
+</body>
+</html>
