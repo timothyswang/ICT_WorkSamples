@@ -24,4 +24,4 @@ I know that only two code samples were required, but I hope you don't mind if I 
 
 This folder contains a Python ipynb file for a machine learning assignment on decision trees for one of my classes at USC (DSCI 552). The homework uses SKLearn.
 
-Please just let me know if you need any other, more recent ML Python examples/work that I've done -- I have ample other examples. (For instance, I have some scripts for solving multi-armed bandit RL problems and for solving Markov Decision Processes.)
+Please just let me know if you need any other, more recent ML Python examples/work that I've done -- I have ample other examples. (For instance, I have some scripts for solving multi-armed bandit RL problems and for solving Markov Decision Process problems.)
